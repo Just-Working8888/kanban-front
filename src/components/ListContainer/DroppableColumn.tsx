@@ -44,7 +44,7 @@ export const DroppableColumn = ({
       <button
         data-modal-target="defaultModal"
         data-modal-toggle="defaultModal"
-        className="hidden md:block text-white text-xs bg-mainPurple hover:bg-mainPurpleHover font-bold px-6 py-4 rounded-3xl"
+        className="md:block text-white text-xs bg-mainPurple hover:bg-mainPurpleHover font-bold px-6 py-4 rounded-3xl"
         onClick={() => setIsOpenTaskModal(true)}
       >
         + Add new task
