@@ -82,9 +82,9 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
     onStart: () => {
       setIsLongPress(true);
     },
-    onFinish: (_, { context }) => {
-      showAlert(context);
-    },
+    // onFinish: (_, { context }) => {
+    //   showAlert(context);
+    // },
     onCancel: () => {
       setIsLongPress(false);
     },
