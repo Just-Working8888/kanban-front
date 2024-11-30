@@ -7,6 +7,7 @@ import { deleteBoard, getOneBoard } from "../../requests/board";
 import { showToast } from "../Common/Toast";
 import { CreateTask } from "../Modals/CreateTask";
 import { UpdateBoard } from "../Modals/UpdateBoard";
+import { Avatar, Flex } from "antd";
 
 export const BoardNameSection = () => {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
@@ -129,10 +130,21 @@ export const BoardNameSection = () => {
           />
           <div className="w-full  z-[100] flex flex-row px-4 md:px-8 items-center">
             <div className="w-full flex flex-row  items-center justify-between">
-              <h1 className="text-xl max-w-[200px] md:max-w-[400px] truncate md:text-2xl text-white font-bold leading-7">
-                {oneColumnData.name}
-              </h1>
+
+              <Flex align="center" gap={10}>
+               
+                <h1 className="text-xl max-w-[200px] md:max-w-[400px] truncate md:text-2xl text-white font-bold leading-7">
+              {oneColumnData.name}
+                </h1>
+              </Flex>
+
               <div className="flex flex-row space-x-3">
+                <a
+                  href="/login"
+                  className="text-mediumGrey text-sm font-semibold leading-[23px] hover:underline cursor-pointer"
+                >
+                  Войти
+                </a>
                 <p
                   className="text-mediumGrey text-sm font-semibold leading-[23px] hover:underline cursor-pointer"
                   onClick={handleModalOpen}

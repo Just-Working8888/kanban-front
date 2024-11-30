@@ -8,6 +8,7 @@ import { deleteTask, getTask } from "../../requests/task";
 import { showToast } from "../Common/Toast";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
+import UserSelect from "../UserSelect/UserSelect";
 
 interface ShowItemModalProps {
   isOpen: boolean;
@@ -145,7 +146,7 @@ export const ShowItem = ({
   };
   return (
     <Modal
-    
+
       title={<Flex justify="space-between"> Task Details <Badge
         color={priorityColors[task?.priority] || "default"}
         text={task?.priority}
@@ -172,11 +173,11 @@ export const ShowItem = ({
                   )}
                 </h1>
                 <p
-                        className="text-red text-sm font-semibold leading-[23px] hover:underline m-0"
-                        onClick={() => showAlert(task)}
-                      >
-                        Delete Task
-                      </p>
+                  className="text-red text-sm font-semibold leading-[23px] hover:underline m-0"
+                  onClick={() => showAlert(task)}
+                >
+                  Delete Task
+                </p>
                 {/* <div>
                   <BiDotsVerticalRounded
                     color="#828FA3"
@@ -208,7 +209,7 @@ export const ShowItem = ({
               <p className="text-[13px] font-medium text-mediumGrey leading-[23px]">
                 {task.description}
               </p>
-
+              <UserSelect />
               <div>
                 {completedSubTasks && (
                   <p className="text-white leading-[15.12px] text-sm font-bold mb-5">

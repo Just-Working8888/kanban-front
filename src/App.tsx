@@ -5,6 +5,8 @@ import Modal from "react-modal";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+import LoginForm from "./components/auth/LoginForm";
+import RegisterForm from "./components/auth/RegisterForm";
 
 function App() {
   const queryClient = new QueryClient();
@@ -34,6 +36,9 @@ function App() {
                 </>
               }
             />
+            <Route path="login" element={<LoginForm />} />
+            <Route path="register" element={<RegisterForm />} />
+
           </Routes>
         </QueryClientProvider>
       </QueryParamProvider>

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    background: linear-gradient(0deg, rgba(31, 41, 55, 1) 46%, rgba(153, 90, 255, 0.7766762955182073) 100%);
+
+}
+
 .ant-modal .ant-modal-content,
 .ant-modal-title {
     color: white !important;
