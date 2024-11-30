@@ -8,7 +8,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ConfigProvider theme={{
       token: {
-        colorText: 'white'
+        colorText: 'white',
+        colorPrimary: '#635fc7'
       }
     }}>
       <App />

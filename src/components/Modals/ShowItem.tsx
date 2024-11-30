@@ -1,4 +1,4 @@
-import { Skeleton, Checkbox, Modal } from "antd"; // Импорт Skeleton из Ant Design
+import { Skeleton, Checkbox, Modal, Tooltip, Badge, Flex } from "antd"; // Импорт Skeleton из Ant Design
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { useQuery, useQueryClient } from "react-query";
@@ -7,6 +7,7 @@ import { updateSubTaskStatus } from "../../requests/subtask";
 import { deleteTask, getTask } from "../../requests/task";
 import { showToast } from "../Common/Toast";
 import Swal from "sweetalert2";
+import dayjs from "dayjs";
 
 interface ShowItemModalProps {
   isOpen: boolean;
@@ -137,26 +138,46 @@ export const ShowItem = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [componentRef, isOpen]);
-
+  const priorityColors: Record<string, string> = {
+    HIGH: "red",
+    MEDIUM: "orange",
+    LOW: "green",
+  };
   return (
     <Modal
-      title="Task Details"
+    
+      title={<Flex justify="space-between"> Task Details <Badge
+        color={priorityColors[task?.priority] || "default"}
+        text={task?.priority}
+      /></Flex>
+      }
       visible={isOpen} // Управление видимостью модального окна
       onCancel={onRequestClose} // Закрытие окна при нажатии на "Cancel"
       footer={null} // Убираем стандартные кнопки внизу
     >
-      <div className="flex flex-col space-y-10 min-w-[416px] ">
+      <div className="flex flex-col space-y-10  ">
         {isLoading ? (
           // Скелеон для загрузки данных
           <Skeleton active />
         ) : (
           task && (
             <>
-              <div className="flex flex-row justify-between items-center">
-                <h1 className="text-2xl font-bold text-white tracking-wider leading-[24px] p-0 m-0 max-w-[387px]">
+              <div className="flex flex-row w-full justify-between items-center">
+                <h1 className="text-2xl font-bold text-white  flex  items-center justify-between w-full tracking-wider leading-[24px] p-0 m-0 max-w-[387px]">
                   {task.title}
+                  {task.dueDate && (
+                    <p className="text-mediumGrey text-xs font-bold">
+                      Due: {dayjs(task.dueDate).format("MMM DD, YYYY")}
+                    </p>
+                  )}
                 </h1>
-                <div>
+                <p
+                        className="text-red text-sm font-semibold leading-[23px] hover:underline m-0"
+                        onClick={() => showAlert(task)}
+                      >
+                        Delete Task
+                      </p>
+                {/* <div>
                   <BiDotsVerticalRounded
                     color="#828FA3"
                     size={40}
@@ -173,6 +194,7 @@ export const ShowItem = ({
                       >
                         Edit Task
                       </p>
+                      
                       <p
                         className="text-red text-sm font-semibold leading-[23px] hover:underline"
                         onClick={() => showAlert(task)}
@@ -181,18 +203,19 @@ export const ShowItem = ({
                       </p>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <p className="text-[13px] font-medium text-mediumGrey leading-[23px]">
                 {task.description}
               </p>
+
               <div>
                 {completedSubTasks && (
                   <p className="text-white leading-[15.12px] text-sm font-bold mb-5">
                     {`Subtasks (${completedSubTasks.length} of ${memoizedTaskData.subTask.length})`}
                   </p>
                 )}
-                <div className="h-28 overflow-y-scroll">
+                <div className="h-28">
                   {task.subTask.map((subTask: any, index: number) => {
                     return (
                       <div
@@ -221,6 +244,6 @@ export const ShowItem = ({
           )
         )}
       </div>
-    </Modal>
+    </Modal >
   );
 };

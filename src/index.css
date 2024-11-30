@@ -39,3 +39,18 @@ input {
     transform: scale(1.04);
     box-shadow: 4px 4px 4px 4px rgba(98, 95, 199, 0.405);
 }
+
+.ant-select-selector {
+    background-color: #2b2c37 !important;
+    border-color: #3e3f4e !important;
+}
+
+.ant-select-selection-placeholder {
+    color: white !important;
+}
+
+.ant-select-item-option-selected {
+    background-color: #635fc7 !important;
+    /* Фон выбранной опции */
+    /* Цвет текста выбранной опции */
+}

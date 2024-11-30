@@ -8,7 +8,8 @@ import { useQueryClient } from "react-query";
 import { ShowItem } from "../Modals/ShowItem";
 import { showToast } from "../Common/Toast";
 import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
-import { Progress } from "antd";
+import { Progress, Badge, Tooltip } from "antd";
+import dayjs from "dayjs";
 
 interface DraggableItemProps {
   index: number;
@@ -99,6 +100,13 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
     }
   }, [editTask]);
 
+  // Priority color mapping
+  const priorityColors: Record<string, string> = {
+    HIGH: "red",
+    MEDIUM: "orange",
+    LOW: "green",
+  };
+
   return (
     <>
       <ShowItem
@@ -110,7 +118,7 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
       <Draggable draggableId={item.id} key={item.id} index={index}>
         {(provided) => {
           return (
-            <div 
+            <div
               ref={provided.innerRef}
               {...provided.dragHandleProps}
               {...provided.draggableProps}
@@ -121,15 +129,35 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
               onClick={handleOnClick}
             >
               <li
+                style={{ borderTop: `5px solid ${item.color}` }}
                 className={`w-full bg-darkGrey
                  rounded-lg mb-5 list-none p-5 item`}
                 key={index}
               >
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col space-y-2">
+                  {/* Title */}
                   <p className="min-w-[248px] max-w-[248px] text-white font-bold text-[15px] leading-5 truncate">
                     {item.title}
                   </p>
 
+                  {/* Priority */}
+                  <Tooltip title={`Priority: ${item.priority}`}>
+                    <Badge
+                      color={priorityColors[item.priority] || "default"}
+                      text={item.priority}
+                    />
+                  </Tooltip>
+
+                  {/* Due Date */}
+                  {item.dueDate && (
+                    <Tooltip title="Due Date">
+                      <p className="text-mediumGrey text-xs font-bold">
+                        Due: {dayjs(item.dueDate).format("MMM DD, YYYY")}
+                      </p>
+                    </Tooltip>
+                  )}
+
+                  {/* Subtasks */}
                   <p className="text-mediumGrey leading-4 font-bold text-xs">
                     {`${completedSubTasks.length} of ${item.subTask.length} subtasks done`}
                   </p>
