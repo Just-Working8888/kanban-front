@@ -133,25 +133,6 @@ export const BoardNameSection = () => {
                 {oneColumnData.name}
               </h1>
               <div className="flex flex-row space-x-3">
-                {/* <button
-                  data-modal-target="defaultModal"
-                  data-modal-toggle="defaultModal"
-                  className="hidden md:block text-white text-xs bg-mainPurple hover:bg-mainPurpleHover font-bold px-6 py-4 rounded-3xl"
-                  onClick={() => setIsOpenTaskModal(true)}
-                >
-                  + Add new task
-                </button> */}
-
-                <button
-                  data-modal-target="defaultModal"
-                  data-modal-toggle="defaultModal"
-                  className="md:hidden text-white bg-mainPurple hover:bg-mainPurpleHover font-bold h-8 w-12 px-1 rounded-3xl"
-                  onClick={() => setIsOpenTaskModal(!isOpenTaskModal)}
-                >
-                  +
-                </button>
-
-
                 <p
                   className="text-mediumGrey text-sm font-semibold leading-[23px] hover:underline cursor-pointer"
                   onClick={handleModalOpen}

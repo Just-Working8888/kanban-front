@@ -58,11 +58,10 @@ export const Container = () => {
             <Sidebar open={open} />
           </div>
           <div
-            className={` overflow-x-scroll  h-screen transition-all duration-300 ease-in-out ${
-              open
+            className={`overflow-x-scroll h-screen transition-all duration-300 ease-in-out ${open
                 ? "ml-5 translate-x-[240px] max-w-[1150px]"
-                : "translate-x-0  "
-            }`}
+                : "translate-x-0"
+              } ${"md:mt-0 mt-16"}`}
           >
             <ListsContainer />
           </div>

@@ -49,9 +49,8 @@ export const Sidebar = ({ open }: SidebarProps) => {
 
       {boardData && (
         <div
-          className={`w-[265px] absolute z-[2]  top-24 bg-darkGrey transition-all duration-300 ease-in-out ${
-            open ? "translate-x-0" : "translate-x-[-400px]"
-          }`}
+          className={`w-[265px] absolute z-[2] md:top-24 top-14 bg-darkGrey transition-all duration-300 ease-in-out ${open ? "translate-x-0" : "translate-x-[-400px]"
+            }`}
         >
           <div className="flex flex-col h-screen w-full mt-5 ml-6">
             <p className="text-mediumGrey text-[14px] leading-[15.12px] font-bold">
@@ -62,11 +61,10 @@ export const Sidebar = ({ open }: SidebarProps) => {
               {boardData.map((board: any, index) => (
                 <div
                   key={index}
-                  className={`flex flex-row space-x-2 items-center ${
-                    index === activeIndex
+                  className={`flex flex-row space-x-2 items-center ${index === activeIndex
                       ? "bg-mainPurple rounded-lg p-2 w-[200px]"
                       : ""
-                  } hover:cursor-pointer`}
+                    } hover:cursor-pointer`}
                   onClick={() => handleClick(index, board.id)}
                 >
                   <TbTemplate
@@ -74,9 +72,8 @@ export const Sidebar = ({ open }: SidebarProps) => {
                     color={`${index === activeIndex ? "white" : "#828FA3"}`}
                   />
                   <p
-                    className={`text-[12px]  font-bold ${
-                      index === activeIndex ? "text-white" : "text-mediumGrey"
-                    }  max-w-[200px] truncate`}
+                    className={`text-[12px]  font-bold ${index === activeIndex ? "text-white" : "text-mediumGrey"
+                      }  max-w-[200px] truncate`}
                   >
                     {board?.name}
                   </p>
