@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Select, Spin, message } from 'antd';
+import { assignUsersToTask } from '../../helpers/AddUserToTask';
 
 const { Option } = Select;
 
@@ -14,7 +15,7 @@ interface User {
     updateAt: string;
 }
 
-const UserSelect: React.FC = () => {
+const UserSelect: React.FC<{ taskId: string }> = ({ taskId }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -48,6 +49,10 @@ const UserSelect: React.FC = () => {
                 style={{ width: "100%" }}
                 placeholder="Выберите пользователя"
                 loading={loading}
+                mode="multiple"
+                // 
+                onChange={(e) => assignUsersToTask(taskId, e)
+                }
                 allowClear
             >
                 {loading ? (
@@ -60,7 +65,7 @@ const UserSelect: React.FC = () => {
                     ))
                 )}
             </Select>
-        </div>
+        </div >
     );
 };
 

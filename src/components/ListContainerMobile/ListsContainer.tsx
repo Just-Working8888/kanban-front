@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { AddColumn } from "./AddColumn";
-import { DroppableColumn } from "./DroppableColumn";
 import { indicatorColor } from "./indicatorColor";
 import { useQuery } from "react-query";
 import {
@@ -12,17 +11,14 @@ import {
 import { StringParam, useQueryParam } from "use-query-params";
 import { showToast } from "../Common/Toast";
 import { Button } from "flowbite-react";
-import TaskSkeleton from "../Skeletons/TaskSkeleton";
-import { Flex } from "antd";
-import SkeletonInput from "antd/es/skeleton/Input";
-import TitleSkeleton from "../Skeletons/TitkeSkeleton";
+import { DroppableColumnMobile } from "./DroppableColumn";
 
 interface WithInColumRequest {
   taskId: string;
   position: number;
 }
 
-export const ListsContainer = () => {
+export const ListsContainerMobile = () => {
   const [columns, setColumns] = useState(null);
 
   const { mutate: moveWithInTheColumnMutate } = moveWithInTheColumns();
@@ -128,9 +124,8 @@ export const ListsContainer = () => {
 
   return (
     <>
-      {columns ? (
-        <div style={{ boxShadow: 'inset 0px 0px 40px 21px rgba(32,33,44,0.99)' }} className=" flex  flex-row h-[80vh]    overflow-y-scroll">
-
+      {columns && (
+        <div className=" flex flex-row h-[80%]  ml-4 md:mt-28 md:ml-6 lg:mt-32 overflow-y-scroll">
           <DragDropContext
             onDragEnd={(result, provided) =>
               onDragEnd(result, columns, setColumns, provided)
@@ -139,7 +134,7 @@ export const ListsContainer = () => {
             {columns &&
               Object.entries(columns).map(([id, column], index) => {
                 return (
-                  <DroppableColumn
+                  <DroppableColumnMobile
                     id={id}
                     indicatorColor={
                       indicatorColor[index % indicatorColor.length]
@@ -148,41 +143,13 @@ export const ListsContainer = () => {
                     column={column}
                     key={index}
                   />
-                )
+                );
               })}
           </DragDropContext>
           <AddColumn />
 
         </div>
-      ) : <>
-        <Flex>
-          <div className="flex flex-col space-y-10  min-w-[380px] columsexxx" style={{ height: 'fit-content' }} >
-            <TitleSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-
-          </div>
-          <div className="flex flex-col space-y-10  min-w-[380px] columsexxx" style={{ height: 'fit-content' }} >
-            <TitleSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-          </div>
-          <div className="flex flex-col space-y-10  min-w-[380px] columsexxx" style={{ height: 'fit-content' }} >
-            <TitleSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-          </div>
-          <div className="flex flex-col space-y-10  min-w-[380px] columsexxx" style={{ height: 'fit-content' }} >
-            <TitleSkeleton />
-            <TaskSkeleton />
-            <TaskSkeleton />
-          </div>
-        </Flex>
-      </>}
+      )}
     </>
   );
 };

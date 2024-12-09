@@ -51,7 +51,7 @@ export const CreateBoard = ({ isOpen, onRequestClose }: ModalProps) => {
         initialValues={{ name: "" }}
         validationSchema={CreateBoardValidationSchema}
         onSubmit={(values, { resetForm }) => {
-          mutate(values, {
+          mutate({ ...values, userId: localStorage.getItem('userId') }, {
             onSuccess: () => {
               showToast.success("New board added");
               resetForm();

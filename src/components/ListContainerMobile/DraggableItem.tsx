@@ -8,7 +8,7 @@ import { useQueryClient } from "react-query";
 import { ShowItem } from "../Modals/ShowItem";
 import { showToast } from "../Common/Toast";
 import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
-import { Progress, Badge, Tooltip, Avatar, Image } from "antd";
+import { Progress, Badge, Tooltip, Avatar, Image, Flex } from "antd";
 import dayjs from "dayjs";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -17,7 +17,7 @@ interface DraggableItemProps {
   item: any;
 }
 
-export const DraggableItem = ({ index, item }: DraggableItemProps) => {
+export const DraggableItemMobile = ({ index, item }: DraggableItemProps) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const queryClient = useQueryClient();
 
@@ -130,62 +130,38 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
               onClick={handleOnClick}
             >
               <li
-                style={{ borderTop: `5px solid ${item.color}` }}
+                style={{ borderTop: `3px solid ${item.color}` }}
                 className={`w-full bg-darkGrey
-                 rounded-lg mb-5 list-none p-5 item relative overflow-hidden`}
+                 rounded-lg mb-1 list-none p-2 item relative overflow-hidden`}
                 key={index}
               >
-                {
-                  item?.image !== "" && <>
-                    <div className=" bg-amber-400 w-full h-20   absolute top-0 left-0">
-                      <Image height={'5rem'} width={'100%'} style={{ objectFit: 'cover' }} src={item.image} />
-                    </div>
-                    <br /><br /><br />
-                  </>
-                }
+
                 <div className="flex flex-col space-y-2">
-                  {/* Title */}
-
-                  <p className="min-w-[248px] max-w-[248px] text-white font-bold text-[15px] leading-5 truncate">
-                    {item.title}
+                  <p className="max-w-[248px] text-white font-bold text-[12px] leading-5 truncate flex gap-1  justify-between">
+                    <Flex gap={3}>
+                      <Badge
+                        size='small'
+                        color={priorityColors[item.priority] || "default"}
+                      />
+                      {item.title}
+                    </Flex>
+                    до: {dayjs(item.dueDate).format("MMM DD, YYYY")}
                   </p>
-
-                  {/* Priority */}
-                  <Tooltip title={`Priority: ${item.priority}`}>
-                    <Badge
-                      color={priorityColors[item.priority] || "default"}
-                      text={item.priority}
-                    />
-                  </Tooltip>
-
-                  {/* Due Date */}
-                  {item.dueDate && (
-                    <Tooltip title="Due Date">
-                      <p className="text-mediumGrey text-xs font-bold">
-                        Due: {dayjs(item.dueDate).format("MMM DD, YYYY")}
-                      </p>
-                    </Tooltip>
-                  )}
-
-                  {/* Subtasks */}
-                  <p className="text-mediumGrey leading-4 font-bold text-xs">
+                  <p className="text-mediumGrey leading-4 font-bold text-xs m-0">
                     {`${completedSubTasks.length} of ${item.subTask.length} subtasks done`}
                   </p>
                   <Progress
-                    percent={(completedSubTasks.length / item.subTask.length) * 100}
+                    percent={Math.round((completedSubTasks.length / item.subTask.length) * 100)}
                     size="small"
                     status="active"
                   />
                 </div>
-                <br />
                 <Avatar.Group>
                   {item?.assignedUsers.map((user: any) =>
                     <Tooltip title={user.userName}>
-                      <Avatar key={user.id} src={user.avatar ? user.avatar : 'https://api.dicebear.com/9.x/adventurer/svg?seed=Aidan'} />
-
+                      <Avatar size='small' key={user.id} src={user.avatar ? user.avatar : 'https://api.dicebear.com/9.x/adventurer/svg?seed=Aidan'} />
                     </Tooltip>
                   )}
-
                 </Avatar.Group>
               </li>
             </div>

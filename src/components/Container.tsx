@@ -2,9 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { ListsContainer } from "./ListContainer/ListsContainer";
 import { Header } from "./Header/Header";
 import { Sidebar } from "./Sidebar";
-import { BsEye } from "react-icons/bs";
+import { BsClipboard, BsEye } from "react-icons/bs";
 import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
 import { CreateTask } from "./Modals/CreateTask";
+import { ListsContainerMobile } from "./ListContainerMobile/ListsContainer";
+import { ListsContainerTable } from "./ListContainerTable/ListsContainer";
+import { Flex, Tabs, TabsProps } from "antd";
+import { TableOutlined } from "@ant-design/icons";
+import ProjectStages from "./ProjectStages/ProjectStages";
 
 // TODO: change the max-width dynamically
 export const Container = () => {
@@ -42,6 +47,35 @@ export const Container = () => {
     };
   }, [componentRef, open]);
 
+  const onChange = (key: string) => {
+    console.log(key);
+  };
+
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: <Flex align="center" gap={10}>Доска <BsClipboard /></Flex>,
+      children: <>
+        <div className="desk">
+          <ListsContainer />
+        </div>
+        <div className="mob">
+          <ListsContainerMobile />
+        </div>
+      </>,
+    },
+    {
+      key: '2',
+      label: <Flex align="center" gap={10}>Таблица <TableOutlined /></Flex>,
+      children: <ListsContainerTable />
+      ,
+    },
+    {
+      key: '3',
+      label: 'Tab 3',
+      children: <ProjectStages/>,
+    },
+  ];
   return (
     <>
       <div className={`w-full bg-darkBG `}>
@@ -58,12 +92,12 @@ export const Container = () => {
             <Sidebar open={open} />
           </div>
           <div
-            className={`overflow-x-scroll h-screen transition-all duration-300 ease-in-out ${open
-                ? "ml-5 translate-x-[240px] max-w-[1150px]"
-                : "translate-x-0"
+            className={`overflow-x-scroll p-5  w-full transition-all duration-300 ease-in-out ${open
+              ? "ml-5 translate-x-[240px] max-w-[1150px]"
+              : "translate-x-0"
               } ${"md:mt-0 mt-16"}`}
           >
-            <ListsContainer />
+            <Tabs style={{ marginTop: '6rem' }} defaultActiveKey="1" items={items} onChange={onChange} />;
           </div>
         </div>
       </div>

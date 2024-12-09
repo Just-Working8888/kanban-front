@@ -8,7 +8,7 @@ import { useQueryClient } from "react-query";
 import { ShowItem } from "../Modals/ShowItem";
 import { showToast } from "../Common/Toast";
 import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
-import { Progress, Badge, Tooltip, Avatar, Image } from "antd";
+import { Progress, Badge, Tooltip, Avatar } from "antd";
 import dayjs from "dayjs";
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -17,7 +17,7 @@ interface DraggableItemProps {
   item: any;
 }
 
-export const DraggableItem = ({ index, item }: DraggableItemProps) => {
+export const DraggableItemTable = ({ index, item }: DraggableItemProps) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const queryClient = useQueryClient();
 
@@ -83,9 +83,6 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
     onStart: () => {
       setIsLongPress(true);
     },
-    // onFinish: (_, { context }) => {
-    //   showAlert(context);
-    // },
     onCancel: () => {
       setIsLongPress(false);
     },
@@ -128,65 +125,46 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
                 columnId: item.columnId,
               })}
               onClick={handleOnClick}
+              className="transition-all duration-300 ease-in-out hover:bg-darkGrey-800 cursor-pointer rounded-lg mb-2"
             >
               <li
-                style={{ borderTop: `5px solid ${item.color}` }}
-                className={`w-full bg-darkGrey
-                 rounded-lg mb-5 list-none p-5 item relative overflow-hidden`}
-                key={index}
+                style={{ borderTop: `3px solid ${item.color}` }}
+                className="w-full flex items-center p-4 bg-darkGrey rounded-lg mb-3 overflow-hidden shadow-lg hover:shadow-xl relative"
               >
-                {
-                  item?.image !== "" && <>
-                    <div className=" bg-amber-400 w-full h-20   absolute top-0 left-0">
-                      <Image height={'5rem'} width={'100%'} style={{ objectFit: 'cover' }} src={item.image} />
-                    </div>
-                    <br /><br /><br />
-                  </>
-                }
-                <div className="flex flex-col space-y-2">
-                  {/* Title */}
-
-                  <p className="min-w-[248px] max-w-[248px] text-white font-bold text-[15px] leading-5 truncate">
-                    {item.title}
-                  </p>
-
-                  {/* Priority */}
-                  <Tooltip title={`Priority: ${item.priority}`}>
+                <div className="flex flex-grow justify-between items-center">
+                  <div className="flex flex-col flex-grow max-w-[220px]">
+                    <p className="text-white font-bold text-[16px] leading-5 truncate">{item.title}</p>
+                    <p className="text-mediumGrey text-xs">{dayjs(item.dueDate).format("MMM DD, YYYY")}</p>
+                  </div>
+                  <div className="flex flex-col items-center">
                     <Badge
+                      size="small"
                       color={priorityColors[item.priority] || "default"}
-                      text={item.priority}
+                      className="mb-2"
                     />
-                  </Tooltip>
-
-                  {/* Due Date */}
-                  {item.dueDate && (
-                    <Tooltip title="Due Date">
-                      <p className="text-mediumGrey text-xs font-bold">
-                        Due: {dayjs(item.dueDate).format("MMM DD, YYYY")}
-                      </p>
-                    </Tooltip>
-                  )}
-
-                  {/* Subtasks */}
-                  <p className="text-mediumGrey leading-4 font-bold text-xs">
-                    {`${completedSubTasks.length} of ${item.subTask.length} subtasks done`}
-                  </p>
-                  <Progress
-                    percent={(completedSubTasks.length / item.subTask.length) * 100}
-                    size="small"
-                    status="active"
-                  />
+                    <span className="text-white text-sm font-semibold">{item.priority}</span>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-mediumGrey text-xs">
+                      {`${completedSubTasks.length} of ${item.subTask.length} subtasks done`}
+                    </p>
+                    <Progress
+                      percent={Math.round((completedSubTasks.length / item.subTask.length) * 100)}
+                      size="small"
+                      status="active"
+                      type="circle"
+                    />
+                  </div>
+                  <div className="ml-4">
+                    <Avatar.Group maxCount={3}>
+                      {item?.assignedUsers.map((user: any) =>
+                        <Tooltip title={user.userName} key={user.id}>
+                          <Avatar size="small" src={user.avatar || 'https://api.dicebear.com/9.x/adventurer/svg?seed=Aidan'} />
+                        </Tooltip>
+                      )}
+                    </Avatar.Group>
+                  </div>
                 </div>
-                <br />
-                <Avatar.Group>
-                  {item?.assignedUsers.map((user: any) =>
-                    <Tooltip title={user.userName}>
-                      <Avatar key={user.id} src={user.avatar ? user.avatar : 'https://api.dicebear.com/9.x/adventurer/svg?seed=Aidan'} />
-
-                    </Tooltip>
-                  )}
-
-                </Avatar.Group>
               </li>
             </div>
           );

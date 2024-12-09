@@ -14,11 +14,13 @@ import {
   Progress,
   Form as AntForm,
   ColorPicker,
+  Image,
 } from "antd";
 import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
 import { showToast } from "../Common/Toast";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, InboxOutlined, PlusOutlined } from "@ant-design/icons";
 import { ErrorMessage } from "formik";
+import updateTaskImageFunction from "../../helpers/UpdateImage";
 const priorities = [
   { label: "Low", value: "LOW" },
   { label: "Medium", value: "MEDIUM" },
@@ -44,6 +46,20 @@ const subTasksPlaceHolders = [
 export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => {
   const [columnsName, setColumnNames]: any = useState(null);
 
+  const [file, setFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+      setFile(selectedFile);
+    }
+  };
   const [queryParams] = useQueryParam("boardId", StringParam);
   const [taskId, setTaskId] = useQueryParam("taskId", StringParam);
   const [editTask, setEditTask] = useQueryParam("EditBoard", BooleanParam);
@@ -76,22 +92,25 @@ export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => 
 
   const initialData = {
     subTasks: editTask && !taskDataLoading
-      ? taskData?.data.data.subTask.map((subTask: any) => subTask.title) // Извлекаем только `title`
-      : [""],
-    title: editTask && !taskDataLoading ? taskData?.data.data.title : "",
+      ? taskData?.data.data.subTask.map((subTask: any) => subTask.title)
+      : ["Make coffee", "Make presentation"], // Задаём несколько шаблонных подзадач
+    title: editTask && !taskDataLoading ? taskData?.data.data.title : "Sample Task", // Пример заголовка
+    color: '#fff',
     description:
-      editTask && !taskDataLoading ? taskData?.data.data.description : "",
+      editTask && !taskDataLoading
+        ? taskData?.data.data.description
+        : "This is a sample description to give an idea.", // Пример описания
     columnId: editTask && !taskDataLoading ? taskData?.data.data.columnId : columnId || "",
-    dueDate: editTask && !taskDataLoading ? taskData?.data.data.dueDate : "",
-    priority: editTask && !taskDataLoading ? taskData?.data.data.priority : ''
+    dueDate: editTask && !taskDataLoading ? taskData?.data.data.dueDate : "", // Оставляем пустым, так как это дата
+    priority: editTask && !taskDataLoading ? taskData?.data.data.priority : "LOW", // Устанавливаем низкий приоритет по умолчанию
   };
-
 
   const handleFinish = (values: any) => {
     const data = {
       ...values,
       columnId: columnId,
       color: color,
+      image: "",
       dueDate: values.dueDate ? new Date(values.dueDate) : null, // Преобразование строки в объект Date
       subTasks: values.subTasks.map((subTask: any) =>
         typeof subTask === "string" ? { title: subTask } : { title: subTask.title }
@@ -118,8 +137,21 @@ export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => 
       });
     } else {
       mutate(data, {
-        onSuccess: () => {
+        onSuccess: (response) => {
+          const taskId = response?.data.id;
+
           showToast.success("Task created successfully");
+          if (taskId && file) {
+            updateTaskImageFunction(taskId, file)
+              .then(() => {
+                showToast.success("Image updated successfully");
+              })
+              .catch((error) => {
+                showToast.error("An error occurred while updating the image");
+                console.error(error);
+              });
+          }
+
           onRequestClose();
         },
         onError: () => {
@@ -131,7 +163,24 @@ export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => 
       });
     }
   };
+  const [progress, setProgress] = useState(0); // Прогресс от 0 до 100
 
+  useEffect(() => {
+    if (isLoading) {
+      const interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev < 100) {
+            return prev + 10; // Увеличиваем прогресс на 10% каждые 300ms
+          } else {
+            clearInterval(interval); // Останавливаем прогресс, когда достигнут 100%
+            return 100;
+          }
+        });
+      }, 300);
+
+      return () => clearInterval(interval); // Очистка интервала
+    }
+  }, [isLoading]);
 
   return (
     <Modal
@@ -142,6 +191,30 @@ export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => 
       centered
       width={700}
     >
+
+      {imagePreview ? (
+        <div className="w-full h-40 rounded-lg border-2 overflow-hidden" style={{ marginTop: 16 }}>
+          <Image style={{ objectFit: 'contain' }} src={imagePreview} />
+        </div>
+      ) : <div className="flex flex-col items-center w-full">
+        <label
+          htmlFor="file-upload"
+          className="cursor-pointer flex items-center justify-center w-full h-40 rounded-lg border-2 border-dashed border-blue-500 bg-darkGrey hover:bg-slate-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+        >
+          <InboxOutlined style={{ fontSize: '40px' }} />
+
+        </label>
+        <input
+          id="file-upload"
+          type="file"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>}
+      {/* Превью картинки */}
+
+
+      <br /><br />
       {taskDataLoading ? (
         <Text>Loading...</Text>
       ) : (
@@ -151,6 +224,7 @@ export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => 
           layout="vertical"
           style={{ width: "100%" }}
         >
+
           <AntForm.Item
             label="Title"
             name="title"
@@ -263,7 +337,7 @@ export const CreateTask = ({ isOpen, onRequestClose, columnId }: ModalProps) => 
 
           <Divider />
           {isLoading ? (
-            <Progress type="circle" style={{ color: "white" }} percent={50} />
+            <Progress style={{ color: "white" }} percent={progress} />
           ) : (
             <button
               type="submit"

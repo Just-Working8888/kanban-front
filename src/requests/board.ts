@@ -28,7 +28,11 @@ export const deleteBoard = () => {
 };
 
 export const getAllBoards = async () => {
-  const result = await api.get("/board");
+  const result = await api.get("/board", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  });
   return result;
 };
 

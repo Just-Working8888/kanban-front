@@ -1,4 +1,4 @@
-import { Skeleton, Checkbox, Modal, Tooltip, Badge, Flex } from "antd"; // Импорт Skeleton из Ant Design
+import { Skeleton, Checkbox, Modal, Tooltip, Badge, Flex, Button } from "antd"; // Используем Button для стилизованных кнопок
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { useQuery, useQueryClient } from "react-query";
@@ -9,6 +9,9 @@ import { showToast } from "../Common/Toast";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
 import UserSelect from "../UserSelect/UserSelect";
+import UpdateImage from "../UpdateImage/UpdateImage";
+import { Draggable } from 'react-beautiful-dnd'; // Для перетаскивания задач
+import CountdownTimer from "../CountdownTimer/CountdownTimer";
 
 interface ShowItemModalProps {
   isOpen: boolean;
@@ -146,105 +149,103 @@ export const ShowItem = ({
   };
   return (
     <Modal
-
-      title={<Flex justify="space-between"> Task Details <Badge
-        color={priorityColors[task?.priority] || "default"}
-        text={task?.priority}
-      /></Flex>
+      width={'100%'}
+      style={{ maxWidth: '1000px' }}
+      title={
+        <Flex justify="space-between">
+          Task Details
+          {task?.dueDate && (
+            <p className="text-mediumGrey text-xs font-bold">
+              <CountdownTimer targetDate={task?.dueDate} />
+            </p>
+          )}
+          <Badge
+            color={priorityColors[task?.priority] || "default"}
+            text={task?.priority}
+          />
+        </Flex>
       }
       visible={isOpen} // Управление видимостью модального окна
       onCancel={onRequestClose} // Закрытие окна при нажатии на "Cancel"
       footer={null} // Убираем стандартные кнопки внизу
     >
-      <div className="flex flex-col space-y-10  ">
-        {isLoading ? (
-          // Скелеон для загрузки данных
-          <Skeleton active />
-        ) : (
-          task && (
-            <>
-              <div className="flex flex-row w-full justify-between items-center">
-                <h1 className="text-2xl font-bold text-white  flex  items-center justify-between w-full tracking-wider leading-[24px] p-0 m-0 max-w-[387px]">
-                  {task.title}
-                  {task.dueDate && (
-                    <p className="text-mediumGrey text-xs font-bold">
-                      Due: {dayjs(task.dueDate).format("MMM DD, YYYY")}
+      <Flex>
+        <div className="flex flex-col space-y-10  ">
+          {isLoading ? (
+            // Скелеон для загрузки данных
+            <Skeleton active />
+          ) : (
+            task && (
+              <>
+                <div className="flex flex-row w-full justify-between items-center">
+                  <h1 className="text-2xl font-bold text-white  flex  items-center justify-between w-full tracking-wider leading-[24px] p-0 m-0 ">
+                    {task.title}
+
+                  </h1>
+                  <Button
+                    type="link"
+                    danger
+                    onClick={() => showAlert(task)}
+                    style={{
+                      fontSize: '20px',
+                      color: '#FF4D4F',
+                      padding: 0,
+                      marginLeft: '10px',
+                    }}
+                  >
+                    Delete Task
+                  </Button>
+                </div>
+
+                <UpdateImage taskId={task.id} />
+                <p className="text-[13px] font-medium text-mediumGrey leading-[23px]">
+                  {task.description}
+                </p>
+                <UserSelect taskId={task.id} />
+                <div>
+                  {completedSubTasks && (
+                    <p className="text-white leading-[15.12px] text-sm font-bold mb-5">
+                      {`Subtasks (${completedSubTasks.length} of ${memoizedTaskData.subTask.length})`}
                     </p>
                   )}
-                </h1>
-                <p
-                  className="text-red text-sm font-semibold leading-[23px] hover:underline m-0"
-                  onClick={() => showAlert(task)}
-                >
-                  Delete Task
-                </p>
-                {/* <div>
-                  <BiDotsVerticalRounded
-                    color="#828FA3"
-                    size={40}
-                    onClick={handleMenuClick}
-                  />
-                  <div
-                    className={`absolute z-[10] ${isMenuOpen ? "visible" : "hidden z-[-10]"}`}
-                    ref={componentRef}
-                  >
-                    <div className="flex flex-col space-y-5 w-[206px] rounded-[10px] p-5 bg-darkBG border-orange-100 border-[1px]">
-                      <p
-                        className="text-mediumGrey text-sm font-semibold leading-[23px] hover:underline"
-                        onClick={handleEditItemClick}
-                      >
-                        Edit Task
-                      </p>
-                      
-                      <p
-                        className="text-red text-sm font-semibold leading-[23px] hover:underline"
-                        onClick={() => showAlert(task)}
-                      >
-                        Delete Task
-                      </p>
-                    </div>
+                  <div>
+                    {task.subTask.map((subTask: any, index: number) => {
+                      return (
+                        <Draggable key={subTask.id} draggableId={subTask.id} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className="w-full bg-darkGrey p-2 rounded-lg mb-2 h-10 flex flex-row space-x-10 justify-left items-center"
+                            >
+                              <Checkbox
+                                checked={subTask.status === "COMPLETE"}
+                                onChange={(event: any) => handleOnChange(event, subTask.id)}
+                                style={{ marginRight: 8 }}
+                              />
+                              <p
+                                className={`${subTask.status === "COMPLETE"
+                                  ? "line-through text-mediumGrey"
+                                  : "text-white"
+                                  }`}
+                              >
+                                {subTask.title}
+                              </p>
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
                   </div>
-                </div> */}
-              </div>
-              <p className="text-[13px] font-medium text-mediumGrey leading-[23px]">
-                {task.description}
-              </p>
-              <UserSelect />
-              <div>
-                {completedSubTasks && (
-                  <p className="text-white leading-[15.12px] text-sm font-bold mb-5">
-                    {`Subtasks (${completedSubTasks.length} of ${memoizedTaskData.subTask.length})`}
-                  </p>
-                )}
-                <div className="h-28">
-                  {task.subTask.map((subTask: any, index: number) => {
-                    return (
-                      <div
-                        className="w-full bg-darkGrey p-2 rounded-lg mb-2 h-10 flex flex-row space-x-10 justify-left items-center"
-                        key={index}
-                      >
-                        <Checkbox
-                          checked={subTask.status === "COMPLETE"}
-                          onChange={(event: any) => handleOnChange(event, subTask.id)}
-                          style={{ marginRight: 8 }}
-                        />
-                        <p
-                          className={`${subTask.status === "COMPLETE"
-                            ? "line-through text-mediumGrey"
-                            : "text-white"
-                            }`}
-                        >
-                          {subTask.title}
-                        </p>
-                      </div>
-                    );
-                  })}
                 </div>
-              </div>
-            </>
-          )
-        )}
-      </div>
+              </>
+            )
+          )}
+
+        </div>
+     
+      </Flex>
     </Modal >
   );
 };

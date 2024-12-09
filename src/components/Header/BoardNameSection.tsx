@@ -7,7 +7,12 @@ import { deleteBoard, getOneBoard } from "../../requests/board";
 import { showToast } from "../Common/Toast";
 import { CreateTask } from "../Modals/CreateTask";
 import { UpdateBoard } from "../Modals/UpdateBoard";
-import { Avatar, Flex } from "antd";
+import { Avatar, Button, Flex, message } from "antd";
+import SkeletonInput from "antd/es/skeleton/Input";
+import SkeletonButton from "antd/es/skeleton/Button";
+import SkeletonNode from "antd/es/skeleton/Node";
+import { UserProfile } from "../Profile/Profile";
+import axios from "axios";
 
 export const BoardNameSection = () => {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
@@ -16,7 +21,7 @@ export const BoardNameSection = () => {
   const [isUpdateTaskModal, setIsUpdateTaskModal] = useState(false);
   const queryClient = useQueryClient();
   const [queryParams, setQueryParam] = useQueryParam("boardId", StringParam);
-
+  
   const { data } = useQuery(
     ["oneColumnData", queryParams],
     () => getOneBoard(queryParams),
@@ -115,7 +120,7 @@ export const BoardNameSection = () => {
 
   return (
     <>
-      {oneColumnData && (
+      {oneColumnData ? (
         <>
           {/* Don't handle the state here, as this modal is used somewhere else in the code,
             might do the unnecessary re-rendering,
@@ -132,12 +137,16 @@ export const BoardNameSection = () => {
             <div className="w-full flex flex-row  items-center justify-between">
 
               <Flex align="center" gap={10}>
-               
+
                 <h1 className="text-xl max-w-[200px] md:max-w-[400px] truncate md:text-2xl text-white font-bold leading-7">
-              {oneColumnData.name}
+                  {oneColumnData.name}
                 </h1>
               </Flex>
-
+              {
+                data?.data?.BoardUser?.map((item: any) => <Button>
+                  {item?.user?.userName}
+                </Button>)
+              }
               <div className="flex flex-row space-x-3">
                 <a
                   href="/login"
@@ -161,7 +170,18 @@ export const BoardNameSection = () => {
             </div>
           </div>
         </>
-      )}
+      ) :
+        <div className="flex justify-between  w-full ">
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+          <SkeletonInput active></SkeletonInput>
+        </div>}
     </>
   );
 };

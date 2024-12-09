@@ -14,3 +14,8 @@ export const updateSubTaskStatus = () => {
     });
   });
 };
+export const updateTaskImage = () => {
+  return useMutation((data: any) => {
+    return api.patch(`/task/${data.taskId}/updateImage/`, data.data);
+  });
+};
