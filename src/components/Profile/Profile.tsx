@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`https://kanban-server-psi.vercel.app/api/v1/user/${localStorage.getItem('userId')}`)
+            .get(`https://kanban-tau-gilt.vercel.app//api/v1/user/${localStorage.getItem('userId')}`)
             .then((response) => {
                 setUserData(response.data);
                 setEditedData(response.data); // Initialize the edit state with fetched data
@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
         if (editedData) {
             setLoading(true);
             axios
-                .patch(`https://kanban-server-psi.vercel.app/api/v1/user/${localStorage.getItem('userId')}`, editedData)
+                .patch(`https://kanban-tau-gilt.vercel.app//api/v1/user/${localStorage.getItem('userId')}`, editedData)
                 .then(() => {
                     message.success('Данные успешно обновлены!');
                     setUserData(editedData); // Update the displayed data

@@ -19,7 +19,7 @@ const updateTaskImageFunction = async (taskId: string, file: File): Promise<void
 
     try {
         const response = await axios.patch(
-            `https://kanban-server-psi.vercel.app/api/v1/task/${taskId}/updateImage`,
+            `https://kanban-tau-gilt.vercel.app//api/v1/task/${taskId}/updateImage`,
             formData,
             {
                 headers: {

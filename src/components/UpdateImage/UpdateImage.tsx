@@ -60,7 +60,7 @@ const UpdateImage: FC<{ taskId: string }> = ({ taskId }) => {
 
         try {
             const response = await axios.patch(
-                `https://kanban-server-psi.vercel.app/api/v1/task/${taskId}/updateImage`, // Замените {taskId} на актуальный id
+                `https://kanban-tau-gilt.vercel.app//api/v1/task/${taskId}/updateImage`, // Замените {taskId} на актуальный id
                 formData,
                 {
                     headers: {

@@ -24,7 +24,7 @@ const UserSelect: React.FC<{ taskId: string }> = ({ taskId }) => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('https://kanban-server-psi.vercel.app/api/v1/user'); // Замените на URL вашего API
+                const response = await axios.get('https://kanban-tau-gilt.vercel.app//api/v1/user'); // Замените на URL вашего API
                 setUsers(response.data);
             } catch (err) {
                 setError('Ошибка при загрузке пользователей');
