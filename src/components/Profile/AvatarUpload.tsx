@@ -12,7 +12,7 @@ const AvatarUpload: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.patch(
-                `http://localhost:3000/api/v1/user/${localStorage.getItem('userId')}/avatar`,
+                `https://kanban-server-psi.vercel.app/api/v1/user/${localStorage.getItem('userId')}/avatar`,
                 formData,
                 {
                     headers: {

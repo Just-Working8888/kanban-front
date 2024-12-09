@@ -13,7 +13,7 @@ export const BannerSection = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:3000/api/v1/user/${localStorage.getItem('userId')}`)
+      .get(`https://kanban-server-psi.vercel.app/api/v1/user/${localStorage.getItem('userId')}`)
       .then((response) => {
         setUserData(response.data);
       })
